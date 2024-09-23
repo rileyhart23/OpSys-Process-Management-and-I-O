@@ -1,16 +1,15 @@
-import java.io.*;
-import java.util.Scanner;
+package code;
 
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        processManager manager = new processManager();
+        ProcessManager manager = new ProcessManager();
         Scanner scanner = new Scanner(System.in);
         int userChoice;
 
-        while(true){
-            System.out.println("\n");
-            System.out.println("Menu:");
+        while (true) {
+            System.out.println("\nMenu:");
             System.out.println("1. Add a process to the list");
             System.out.println("2. Delete a process from the list by its ID");
             System.out.println("3. Delete all processes by a user");
@@ -20,8 +19,7 @@ public class Main {
             System.out.println("7. Exit the program");
             System.out.print("Enter your choice: ");
             userChoice = scanner.nextInt();
-            scanner.nextLine(); 
-
+            scanner.nextLine();
 
             switch (userChoice) {
                 case 1:
@@ -36,40 +34,47 @@ public class Main {
                     String user = scanner.nextLine();
 
                     System.out.println("Please enter the Execution Time: ");
-                    int exectionTime = scanner.nextInt();
+                    int executionTime = scanner.nextInt();
 
-                    //process newProcess = new process(processID, name, user, exectionTime);
-                    // manager.addprocess(newProcess);
+                    Process newProcess = new Process(processID, name, user, executionTime);
+                    manager.addProcess(newProcess);
                     break;
+
                 case 2:
                     System.out.println("Please enter the ID of the process you want to delete: ");
                     int processIDDelete = scanner.nextInt();
-                    //manager.deleteProcessByID(processIDDelete);
+                    manager.deleteProcessByID(processIDDelete);
                     break;
+
                 case 3:
                     System.out.println("Enter User to delete all processes: ");
                     String userDelete = scanner.nextLine();
-                    //manager.deleteAllProcessesByUser(userDelete);
+                    manager.deleteAllProcessesByUser(userDelete);
                     break;
+
                 case 4:
-                    //manager.printProccesList();
+                    manager.printProccesList();
                     break;
+
                 case 5:
                     System.out.println("Enter filename to save: ");
                     String filenameToSave = scanner.nextLine();
-                    //manager.saveProcessList(filenameToSave);
+                    manager.saveProcessList(filenameToSave);
                     break;
+
                 case 6:
                     System.out.println("Enter filename to load: ");
-                    String  filenameToLoad = scanner.nextLine();
+                    String filenameToLoad = scanner.nextLine();
+                    manager.loadProcessList(filenameToLoad);
                     break;
+
                 case 7:
                     scanner.close();
-                    System.out.println("Exiting code now.\n");
+                    System.out.println("Exiting program.");
                     System.exit(0);
+
                 default:
-                    System.out.println("Invalid choice. Please choose a valid option.\n");
-        
+                    System.out.println("Invalid choice. Please choose a valid option.");
             }
         }
     }
