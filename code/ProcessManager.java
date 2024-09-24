@@ -55,7 +55,7 @@ public class ProcessManager {
         }
     }
 
-    public void printProccesList() {
+    public void printProcessList() {
         Process temp = head;
         while (temp != null) {
             System.out.println("Product ID: " + temp.productID +
@@ -73,10 +73,13 @@ public class ProcessManager {
                 writer.write(temp.productID + "," + temp.name + "," + temp.user + "," + temp.executionTime + "\n");
                 temp = temp.next;
             }
-        } catch (IOException xeption) {
-            xeption.printStackTrace();
+            System.out.println("Process list saved successfully.");
+        } catch (IOException exception) {
+            System.out.println("An error occurred while saving the process list.");
+            exception.printStackTrace();
         }
     }
+    
 
     public void loadProcessList(String filenameToLoad) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filenameToLoad))) {
@@ -90,8 +93,8 @@ public class ProcessManager {
                 Process newProcess = new Process(productID, name, user, executionTime);
                 addProcess(newProcess);
             }
-        } catch (IOException xeption) {
-            xeption.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
     }
 

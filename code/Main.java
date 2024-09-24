@@ -53,7 +53,7 @@ public class Main {
                     break;
 
                 case 4:
-                    manager.printProccesList();
+                    manager.printProcessList();
                     break;
 
                 case 5:
