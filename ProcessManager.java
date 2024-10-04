@@ -1,17 +1,20 @@
+// Operating Systems Concepts and Design Programming Assignment 1: Process Management and I/O
+// CPSC 340
+// Riley Wasdyke
+// 10/03/2024
+
 import java.io.*;
-import java.util.Scanner;
 
 public class ProcessManager {
     private Process head;
     private Process tail;
-    private int processIdCounter = 1; // Simple counter for process IDs
+    private int processIdCounter = 1;
 
     public ProcessManager() {
         head = null;
         tail = null;
     }
 
-    // Method to add a process
     public void addProcess(String name, String user, int executionTime) {
         Process newProcess = new Process(processIdCounter++, name, user, executionTime);
         if (head == null) {
@@ -22,10 +25,9 @@ public class ProcessManager {
             newProcess.prev = tail;
             tail = newProcess;
         }
-        System.out.println("Process added: " + newProcess);
+        System.out.println("Process added sucessfully");
     }
 
-    // Method to remove a process by ID
     public void removeProcessById(int id) {
         Process current = head;
         while (current != null) {
@@ -33,12 +35,12 @@ public class ProcessManager {
                 if (current.prev != null) {
                     current.prev.next = current.next;
                 } else {
-                    head = current.next; // Removing head
+                    head = current.next;
                 }
                 if (current.next != null) {
                     current.next.prev = current.prev;
                 } else {
-                    tail = current.prev; // Removing tail
+                    tail = current.prev;
                 }
                 System.out.println("Process removed: " + current);
                 return;
@@ -48,8 +50,7 @@ public class ProcessManager {
         System.out.println("Process ID not found.");
     }
 
-    // Method to remove all processes by user
-    public void removeProcessesByUser(String user) {
+    public void deleteProcessesByUser(String user) {
         Process current = head;
         boolean found = false;
         while (current != null) {
@@ -58,12 +59,12 @@ public class ProcessManager {
                 if (current.prev != null) {
                     current.prev.next = current.next;
                 } else {
-                    head = current.next; // Removing head
+                    head = current.next;
                 }
                 if (current.next != null) {
                     current.next.prev = current.prev;
                 } else {
-                    tail = current.prev; // Removing tail
+                    tail = current.prev;
                 }
                 System.out.println("Process removed: " + current);
             }
@@ -74,20 +75,17 @@ public class ProcessManager {
         }
     }
 
-    // Method to display the process list
-    public void printProcessList() {
-        Process current = head;
-        if (current == null) {
-            System.out.println("Process list is empty.");
-            return;
-        }
-        while (current != null) {
-            System.out.println(current);
-            current = current.next;
+    public void printProccesList() {
+        Process temp = head;
+        while (temp != null) {
+            System.out.println("Product ID: " + temp.id +
+                    "\nName: " + temp.name +
+                    "\nUser: " + temp.user +
+                    "\nExecution Time: " + temp.executionTime);
+            temp = temp.next;
         }
     }
 
-    // Method to save the process list to a file
     public void saveToFile(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             Process current = head;
@@ -102,7 +100,6 @@ public class ProcessManager {
         }
     }
 
-    // Method to load the process list from a file
     public void loadFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;

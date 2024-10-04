@@ -1,4 +1,8 @@
-import java.io.*;
+// Operating Systems Concepts and Design Programming Assignment 1: Process Management and I/O
+// CPSC 340
+// Riley Wasdyke
+// 10/03/2024
+
 import java.util.Scanner;
 
 public class Main {
@@ -9,7 +13,7 @@ public class Main {
         int choice;
 
         do {
-            System.out.println("Process Manager Menu:");
+            System.out.println("\nProcess Manager Menu:");
             System.out.println("1. Add a process to the list.");
             System.out.println("2. Delete a process from the list by its ID.");
             System.out.println("3. Delete all processes by a user.");
@@ -19,7 +23,7 @@ public class Main {
             System.out.println("7. Exit the program.");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -39,10 +43,10 @@ public class Main {
                 case 3:
                     System.out.print("Enter user name to delete all processes: ");
                     String userToDelete = scanner.nextLine();
-                    manager.removeProcessesByUser(userToDelete);
+                    manager.deleteProcessesByUser(userToDelete);
                     break;
                 case 4:
-                    manager.printProcessList();
+                    manager.printProccesList();
                     break;
                 case 5:
                     System.out.print("Enter filename to save: ");
@@ -55,7 +59,7 @@ public class Main {
                     manager.loadFromFile(loadFilename);
                     break;
                 case 7:
-                    System.out.println("Exiting program. Goodbye!");
+                    System.out.println("Exiting program now.\n");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
