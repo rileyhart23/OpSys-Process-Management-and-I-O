@@ -4,9 +4,12 @@
 // 10/03/2024
 
 public class Process {
-    int id, executionTime;
-    String name, user;
-    Process next, prev;
+    int id;
+    String name;
+    String user;
+    int executionTime;
+    Process next;
+    Process prev;
 
     public Process(int id, String name, String user, int executionTime) {
         this.id = id;
@@ -17,4 +20,8 @@ public class Process {
         this.prev = null;
     }
 
+    @Override
+    public String toString() {
+        return id + "," + name + "," + user + "," + executionTime;
+    }
 }
