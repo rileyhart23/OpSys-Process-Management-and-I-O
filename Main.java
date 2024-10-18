@@ -20,7 +20,10 @@ public class Main {
             System.out.println("4. Print the entire process list, from beginning to end.");
             System.out.println("5. Save the process list to a file.");
             System.out.println("6. Load the process list from a file.");
-            System.out.println("7. Exit the program.");
+            System.out.println("7. Schedule the processes using FCFS and display results.");
+            System.out.println("8. Schedule the processes using RR, provide time quantum, and display results.");
+            System.out.println("9. Exit the program.");
+
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -59,12 +62,20 @@ public class Main {
                     manager.loadFromFile(loadFilename);
                     break;
                 case 7:
+                    manager.FCFSScheduling();
+                    break;
+                case 8:
+                    System.out.print("Enter time quantum: ");
+                    int timeQuantum = scanner.nextInt();
+                    manager.RoundRobinScheduling(timeQuantum);
+                    break;
+                case 9:
                     System.out.println("Exiting program now.\n");
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
-        } while (choice != 7);
+        } while (choice != 9);
 
         scanner.close();
     }

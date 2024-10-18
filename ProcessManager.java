@@ -78,7 +78,7 @@ public class ProcessManager {
     public void printProccesList() {
         Process temp = head;
         while (temp != null) {
-            System.out.println("Product ID: " + temp.id +
+            System.out.println("Process ID: " + temp.id +
                     "\nName: " + temp.name +
                     "\nUser: " + temp.user +
                     "\nExecution Time: " + temp.executionTime);
@@ -113,5 +113,64 @@ public class ProcessManager {
         } catch (IOException e) {
             System.out.println("Error loading from file: " + e.getMessage());
         }
+    }
+
+    public void FCFSScheduling() {
+        int currentTime = 0;
+        Process temp = head;
+        System.out.println("\nRunning FCFS Scheduling:");
+
+        while (temp != null) {
+            int responseTime = currentTime;
+            currentTime += temp.executionTime; // Update current time
+            int turnaroundTime = currentTime;
+
+            System.out.printf("Process ID: " + temp.id, "Name: " + temp.name,
+                    "Execution Time: " + temp.executionTime, "Response Time: " + responseTime,
+                    "Turnaround Time: " + turnaroundTime);
+            temp = temp.next;
+        }
+    }
+
+    public void RoundRobinScheduling(int quantum) {
+        Process temp = head;
+        System.out.println("\nRunning Round Robin Scheduling with Quantum = " + quantum + ":");
+        int currentTime = 0;
+
+        if (temp == null) {
+            System.out.println("No processes to schedule.");
+            return;
+        }
+
+        // Create a circular linked list
+        tail.next = head; // Connect tail to head for circular behavior
+
+        do {
+            boolean allDone = true; // Flag to check if all processes are done
+            temp = head; // Start from the head
+
+            do {
+                if (temp.executionTime > 0) {
+                    allDone = false; // At least one process is not done
+                    int timeToExecute = Math.min(temp.executionTime, quantum);
+                    currentTime += timeToExecute; // Increase current time
+                    temp.executionTime -= timeToExecute; // Decrease execution time
+
+                    // If process is completed
+                    if (temp.executionTime == 0) {
+                        System.out.printf("Process ID: %d, Name: %s completed at time: %d%n",
+                                temp.id, temp.name, currentTime);
+                    } else {
+                        System.out.printf("Process ID: %d, Name: %s executed for %d time units, remaining time: %d%n",
+                                temp.id, temp.name, timeToExecute, temp.executionTime);
+                    }
+                }
+                temp = temp.next; // Move to next process
+            } while (temp != head); // Continue until we circle back to head
+
+            if (allDone)
+                break; // If all processes are done, exit loop
+
+        } while (true);
     }
 }
