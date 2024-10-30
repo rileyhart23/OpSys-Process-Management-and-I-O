@@ -1,7 +1,7 @@
-// Operating Systems Concepts and Design Programming Assignment 1: Process Management and I/O
+// Operating Systems Concepts and Design Programming Assignment 2:
 // CPSC 340
 // Riley Wasdyke
-// 10/03/2024
+// 10/29/2024
 
 import java.util.Scanner;
 
@@ -49,7 +49,7 @@ public class Main {
                     manager.deleteProcessesByUser(userToDelete);
                     break;
                 case 4:
-                    manager.printProccesList();
+                    manager.printProcessList();
                     break;
                 case 5:
                     System.out.print("Enter filename to save: ");

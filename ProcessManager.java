@@ -1,14 +1,22 @@
-// Operating Systems Concepts and Design Programming Assignment 1: Process Management and I/O
+// Operating Systems Concepts and Design Programming Assignment 2:
 // CPSC 340
 // Riley Wasdyke
-// 10/03/2024
+// 10/29/2024
 
+import java.text.DecimalFormat;
 import java.io.*;
 
 public class ProcessManager {
     private Process head;
     private Process tail;
     private int processIdCounter = 1;
+    private int currentTime = 0;
+    private int totalTurnaroundTime = 0;
+    private int totalResponseTime = 0;
+    private int processCount = 0;
+    private int completedProcesses = 0;
+    private float averageTurnaroundTime = 0;
+    private float averageResponseTime = 0;
 
     public ProcessManager() {
         head = null;
@@ -25,7 +33,6 @@ public class ProcessManager {
             newProcess.prev = tail;
             tail = newProcess;
         }
-        System.out.println("Process added sucessfully");
     }
 
     public void removeProcessById(int id) {
@@ -75,13 +82,18 @@ public class ProcessManager {
         }
     }
 
-    public void printProccesList() {
+    public void printProcessList() {
+        if (head == null) {
+            System.out.println("No processes to print. \nAdd some processes or load from a file before printing.");
+            return;
+        } else {
+            System.out.println("Process List:\n");
+        }
         Process temp = head;
+        System.out.printf("Process ID:\tName\t\tExecution Time\tResponse Time\tTurnaround Time\n");
         while (temp != null) {
-            System.out.println("Process ID: " + temp.id +
-                    "\nName: " + temp.name +
-                    "\nUser: " + temp.user +
-                    "\nExecution Time: " + temp.executionTime);
+            System.out.println(temp.id + "\t\t" + temp.name + "\t" + temp.executionTime +
+                    "\t\t" + temp.responseTime + "\t\t" + temp.startTime);
             temp = temp.next;
         }
     }
@@ -116,61 +128,113 @@ public class ProcessManager {
     }
 
     public void FCFSScheduling() {
-        int currentTime = 0;
+        if (head == null) {
+            System.out.println("No processes to schedule.");
+            return;
+        } else {
+            System.out.println("Running FCFS Scheduling \n");
+        }
+
+        currentTime = 0;
+        totalTurnaroundTime = 0;
+        totalResponseTime = 0;
+        processCount = 0;
+
         Process temp = head;
-        System.out.println("\nRunning FCFS Scheduling:");
+
+        System.out.println("\nFCFS Scheduling:");
+        System.out.printf("Process ID:\tName\tExecution Time\tResponse Time\tTurnaround Time\n");
 
         while (temp != null) {
             int responseTime = currentTime;
-            currentTime += temp.executionTime; // Update current time
-            int turnaroundTime = currentTime;
+            int turnaroundTime = responseTime + temp.executionTime;
+            currentTime += temp.executionTime;
 
-            System.out.printf("Process ID: " + temp.id, "Name: " + temp.name,
-                    "Execution Time: " + temp.executionTime, "Response Time: " + responseTime,
-                    "Turnaround Time: " + turnaroundTime);
+            totalTurnaroundTime += turnaroundTime;
+            totalResponseTime += responseTime;
+            processCount++;
+
+            System.out.println(temp.id + "\t" + temp.name + "\t" + temp.executionTime +
+                    "\t\t" + responseTime + "\t\t" + turnaroundTime);
+
             temp = temp.next;
+        }
+
+        if (processCount > 0) {
+            averageTurnaroundTime = (float) totalTurnaroundTime / processCount;
+            averageResponseTime = (float) totalResponseTime / processCount;
+
+            DecimalFormat df = new DecimalFormat("#.00");
+
+            String formattedTurnaroundTime = df.format(averageTurnaroundTime);
+            String formattedResponseTime = df.format(averageResponseTime);
+
+            System.out.println("\nAverage Turnaround Time: " + formattedTurnaroundTime);
+            System.out.println("Average Response Time: " + formattedResponseTime);
         }
     }
 
     public void RoundRobinScheduling(int quantum) {
-        Process temp = head;
-        System.out.println("\nRunning Round Robin Scheduling with Quantum = " + quantum + ":");
-        int currentTime = 0;
-
-        if (temp == null) {
+        if (head == null) {
             System.out.println("No processes to schedule.");
             return;
+        } else {
+            System.out.println("Running Round Robin Scheduling");
         }
 
-        // Create a circular linked list
-        tail.next = head; // Connect tail to head for circular behavior
+        currentTime = 0;
+        totalTurnaroundTime = 0;
+        totalResponseTime = 0;
+        processCount = 0;
+        completedProcesses = 0;
 
-        do {
-            boolean allDone = true; // Flag to check if all processes are done
-            temp = head; // Start from the head
+        Process temp = head;
+        System.out.printf("Process ID:\tName\tExecution Time\tResponse Time\tTurnaround Time\n");
 
-            do {
-                if (temp.executionTime > 0) {
-                    allDone = false; // At least one process is not done
-                    int timeToExecute = Math.min(temp.executionTime, quantum);
-                    currentTime += timeToExecute; // Increase current time
-                    temp.executionTime -= timeToExecute; // Decrease execution time
+        while (temp != null) {
+            temp.remainingTime = temp.executionTime;
+            temp.responseTime = -1;
+            processCount++;
+            temp = temp.next;
+        }
 
-                    // If process is completed
-                    if (temp.executionTime == 0) {
-                        System.out.printf("Process ID: %d, Name: %s completed at time: %d%n",
-                                temp.id, temp.name, currentTime);
-                    } else {
-                        System.out.printf("Process ID: %d, Name: %s executed for %d time units, remaining time: %d%n",
-                                temp.id, temp.name, timeToExecute, temp.executionTime);
-                    }
+        temp = head;
+
+        while (completedProcesses < processCount) {
+            if (temp.remainingTime > 0) {
+                if (temp.responseTime == -1) {
+                    temp.responseTime = currentTime;
                 }
-                temp = temp.next; // Move to next process
-            } while (temp != head); // Continue until we circle back to head
 
-            if (allDone)
-                break; // If all processes are done, exit loop
+                int timeToRun = Math.min(temp.remainingTime, quantum);
+                temp.remainingTime -= timeToRun;
+                currentTime += timeToRun;
 
-        } while (true);
+                if (temp.remainingTime == 0) {
+                    int turnaroundTime = currentTime;
+                    System.out.println(temp.id + "\t" + temp.name + "\t" + temp.executionTime +
+                            "\t\t" + temp.responseTime + "\t\t" + turnaroundTime);
+
+                    totalTurnaroundTime += turnaroundTime;
+                    totalResponseTime += temp.responseTime;
+                    completedProcesses++;
+                }
+            }
+
+            temp = (temp.next != null) ? temp.next : head;
+        }
+
+        if (processCount > 0) {
+            averageTurnaroundTime = (float) totalTurnaroundTime / processCount;
+            averageResponseTime = (float) totalResponseTime / processCount;
+
+            DecimalFormat df = new DecimalFormat("#.00");
+
+            String formattedTurnaroundTime = df.format(averageTurnaroundTime);
+            String formattedResponseTime = df.format(averageResponseTime);
+
+            System.out.println("\nAverage Turnaround Time: " + formattedTurnaroundTime);
+            System.out.println("Average Response Time: " + formattedResponseTime);
+        }
     }
 }
